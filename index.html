@@ -79,19 +79,39 @@ html.light {
         color: var(--text-primary);
       }
 
-      /* Ultra Luxury Cinematic 3D Card */
+      /* =========================
+   RUNWAY CINEMATIC CARD
+========================= */
+
 .card-3d {
   position: relative;
-  border-radius: 16px;
-  background: linear-gradient(180deg, #0f1319 0%, #0b0f15 100%);
-  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 20px;
+  background: linear-gradient(180deg, #0e1218 0%, #0a0e13 100%);
+  border: 1px solid rgba(255,255,255,0.04);
   overflow: hidden;
-  transition: all 0.8s cubic-bezier(0.16,1,0.3,1);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  transition: transform 1s cubic-bezier(0.16,1,0.3,1),
+              box-shadow 1s cubic-bezier(0.16,1,0.3,1);
+  box-shadow: 0 25px 80px rgba(0,0,0,0.65);
 }
 
-/* Subtle red edge glow */
+/* Ambient red aura layer */
 .card-3d::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: radial-gradient(
+    600px circle at var(--x,50%) var(--y,50%),
+    rgba(255,0,51,0.25),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+}
+
+/* Subtle luxury edge */
+.card-3d::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -99,9 +119,9 @@ html.light {
   padding: 1px;
   background: linear-gradient(
     120deg,
-    transparent 20%,
-    rgba(255,0,51,0.4),
-    transparent 80%
+    transparent 30%,
+    rgba(255,0,51,0.5),
+    transparent 70%
   );
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
@@ -112,30 +132,27 @@ html.light {
   transition: opacity 0.6s ease;
 }
 
-/* Hover state */
+/* Hover cinematic lift */
 .card-3d:hover {
-  transform: translateY(-16px);
+  transform: translateY(-18px) scale(1.02);
   box-shadow:
-    0 40px 120px rgba(0,0,0,0.8),
-    0 0 40px rgba(255,0,51,0.15);
+    0 50px 140px rgba(0,0,0,0.85),
+    0 0 60px rgba(255,0,51,0.12);
 }
 
-.card-3d:hover::before {
-  opacity: 0.8;
+.card-3d:hover::before,
+.card-3d:hover::after {
+  opacity: 1;
 }
 
-:hover{
-  transform: translateY(-16px);
-  box-shadow:
-    0 40px 120px rgba(0,0,0,0.8),
-    var(--glow-soft);
-  border-color: rgba(255,255,255,0.08);
+/* Slow editorial breathing */
+.card-3d {
+  animation: luxuryFloat 6s ease-in-out infinite;
 }
 
-      /* Lighting/BG Effect (studio cards) */
-      .bg-studio{
-  background: var(--bg-card);
-  border-radius: 8px;
+@keyframes luxuryFloat {
+  0%,100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
 }
 
       /* Model viewer baseline */
@@ -530,6 +547,17 @@ if (heroImg) {
       `translateY(${scrollY * 0.3}px) scale(1.1)`;
   });
 }
+</script>
+    <script>
+document.querySelectorAll(".card-3d").forEach(card => {
+  card.addEventListener("mousemove", e => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    card.style.setProperty("--x", x + "px");
+    card.style.setProperty("--y", y + "px");
+  });
+});
 </script>
 </body>
 </html>

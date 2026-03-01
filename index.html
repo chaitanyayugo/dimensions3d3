@@ -83,15 +83,38 @@ html.light {
    RUNWAY CINEMATIC CARD
 ========================= */
 
+/* =========================
+   RUNWAY CINEMATIC CARD (FIXED)
+========================= */
+
 .card-3d {
   position: relative;
   border-radius: 20px;
   background: linear-gradient(180deg, #0e1218 0%, #0a0e13 100%);
   border: 1px solid rgba(255,255,255,0.04);
   overflow: hidden;
-  transition: transform 1s cubic-bezier(0.16,1,0.3,1),
-              box-shadow 1s cubic-bezier(0.16,1,0.3,1);
+  transition: transform 0.9s cubic-bezier(0.16,1,0.3,1),
+              box-shadow 0.9s cubic-bezier(0.16,1,0.3,1);
   box-shadow: 0 25px 80px rgba(0,0,0,0.65);
+  will-change: transform;
+}
+
+/* Floating ONLY when not hovered */
+.card-3d:not(:hover) {
+  animation: luxuryFloat 6s ease-in-out infinite;
+}
+
+@keyframes luxuryFloat {
+  0%,100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Hover cinematic lift */
+.card-3d:hover {
+  transform: translateY(-18px) scale(1.02);
+  box-shadow:
+    0 50px 140px rgba(0,0,0,0.85),
+    0 0 60px rgba(255,0,51,0.12);
 }
 
 /* Ambient red aura layer */
@@ -106,8 +129,12 @@ html.light {
     transparent 60%
   );
   opacity: 0;
-  transition: opacity 0.6s ease;
+  transition: opacity 0.5s ease;
   pointer-events: none;
+}
+
+.card-3d:hover::before {
+  opacity: 1;
 }
 
 /* Subtle luxury edge */
@@ -120,7 +147,7 @@ html.light {
   background: linear-gradient(
     120deg,
     transparent 30%,
-    rgba(255,0,51,0.5),
+    rgba(255,0,51,0.45),
     transparent 70%
   );
   -webkit-mask:
@@ -129,32 +156,12 @@ html.light {
   -webkit-mask-composite: xor;
           mask-composite: exclude;
   opacity: 0;
-  transition: opacity 0.6s ease;
+  transition: opacity 0.5s ease;
 }
 
-/* Hover cinematic lift */
-.card-3d:hover {
-  transform: translateY(-18px) scale(1.02);
-  box-shadow:
-    0 50px 140px rgba(0,0,0,0.85),
-    0 0 60px rgba(255,0,51,0.12);
-}
-
-.card-3d:hover::before,
 .card-3d:hover::after {
   opacity: 1;
 }
-
-/* Slow editorial breathing */
-.card-3d {
-  animation: luxuryFloat 6s ease-in-out infinite;
-}
-
-@keyframes luxuryFloat {
-  0%,100% { transform: translateY(0px); }
-  50% { transform: translateY(-6px); }
-}
-
       /* Model viewer baseline */
       model-viewer {
         width:100%;

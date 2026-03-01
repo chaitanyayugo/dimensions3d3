@@ -44,9 +44,9 @@ html.light {
       body {
         font-family: 'Inter', sans-serif;
         background:
-    radial-gradient(circle at 20% 10%, rgba(255,0,51,0.04), transparent 40%),
-    radial-gradient(circle at 80% 90%, rgba(255,0,51,0.03), transparent 50%),
-    var(--bg-main);
+    radial-gradient(circle at 15% 10%, rgba(255,0,51,0.05), transparent 40%),
+    radial-gradient(circle at 85% 90%, rgba(255,0,51,0.04), transparent 50%),
+    linear-gradient(180deg, #05070a 0%, #040608 100%);
         color: var(--text-primary);
         overflow-x: hidden;
         -webkit-font-smoothing:antialiased;
@@ -79,16 +79,52 @@ html.light {
         color: var(--text-primary);
       }
 
-      /* 3D Card Hover */
-      .card-3d{
-  transition: all 0.8s cubic-bezier(0.16,1,0.3,1);
-  border: 1px solid var(--border);
-  background: linear-gradient(180deg, #0f1319 0%, #0b0f15 100%);
+      /* Ultra Luxury Cinematic 3D Card */
+.card-3d {
+  position: relative;
   border-radius: 16px;
+  background: linear-gradient(180deg, #0f1319 0%, #0b0f15 100%);
+  border: 1px solid rgba(255,255,255,0.05);
+  overflow: hidden;
+  transition: all 0.8s cubic-bezier(0.16,1,0.3,1);
   box-shadow: 0 20px 60px rgba(0,0,0,0.6);
 }
 
-.card-3d:hover{
+/* Subtle red edge glow */
+.card-3d::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    120deg,
+    transparent 20%,
+    rgba(255,0,51,0.4),
+    transparent 80%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+/* Hover state */
+.card-3d:hover {
+  transform: translateY(-16px);
+  box-shadow:
+    0 40px 120px rgba(0,0,0,0.8),
+    0 0 40px rgba(255,0,51,0.15);
+}
+
+.card-3d:hover::before {
+  opacity: 0.8;
+}
+
+:hover{
   transform: translateY(-16px);
   box-shadow:
     0 40px 120px rgba(0,0,0,0.8),

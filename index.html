@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>DIMENSIONS | Premium 3D Bespoke Interiors</title>
+
+    <!-- Scripts -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+      /* ----- Dark mode variables (DEFAULT) ----- */
+      :root{
+        --bg-main: #0b0f17;       /* primary page background (replaces white) */
+        --bg-secondary: #0f1419;  /* section backgrounds */
+        --bg-card: #121419;       /* card/panel background */
+        --bg-studio-start: rgba(255,255,255,0.02);
+        --bg-studio-end: rgba(255,255,255,0.03);
+
+        --text-primary: #ffffff;  /* main text */
+        --text-muted: #94a3b8;    /* muted text */
+        --muted-2: #7b8794;
+
+        --accent: #ff0033;        /* hot red for former 'black' accents */
+        --border: rgba(255,255,255,0.06);
+        --glass: rgba(255,255,255,0.03);
+      }
+
+      /* Base */
+      html,body { height:100%; }
+      body {
+        font-family: 'Inter', sans-serif;
+        background: var(--bg-main);
+        color: var(--text-primary);
+        overflow-x: hidden;
+        -webkit-font-smoothing:antialiased;
+        -moz-osx-font-smoothing:grayscale;
+      }
+
+      .tracking-premium { letter-spacing: 0.5em; }
+
+      /* NAV */
+      nav {
+        background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+        backdrop-filter: blur(6px);
+        border-bottom: 1px solid var(--border);
+      }
+      nav .text-xl { color: var(--text-primary); }
+      nav a { color: var(--muted-2); }
+      nav a:hover { color: var(--text-primary); }
+
+      /* Buttons / accent */
+      .btn-accent {
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        transition: transform .14s ease, box-shadow .14s ease, opacity .12s ease;
+        box-shadow: 0 8px 30px rgba(255,0,51,0.10);
+      }
+      .btn-accent:hover { transform: translateY(-2px); opacity: .95; box-shadow: 0 18px 40px rgba(255,0,51,0.12); }
+      .btn-outline {
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.06);
+        color: var(--text-primary);
+      }
+
+      /* 3D Card Hover */
+      .card-3d{
+        transition: all 0.8s cubic-bezier(0.16,1,0.3,1);
+        border: 1px solid var(--border);
+        background: linear-gradient(180deg, var(--bg-card), #0d1114);
+        border-radius: 12px;
+      }
+      .card-3d:hover{
+        transform: translateY(-18px);
+        box-shadow: 0 40px 90px -20px rgba(0,0,0,0.6);
+        border-color: rgba(255,255,255,0.08);
+      }
+
+      /* Lighting/BG Effect (studio cards) */
+      .bg-studio{
+        background: radial-gradient(circle at 30% 20%, var(--bg-studio-start) 0%, var(--bg-studio-end) 100%);
+        border-radius: 8px;
+      }
+
+      /* Model viewer baseline */
+      model-viewer {
+        width:100%;
+        height: 380px;
+        --poster-color: transparent;
+        outline:none;
+        cursor: grab;
+        display: block;
+      }
+      model-viewer:active { cursor: grabbing; }
+
+      /* Shine hover (keeps subtle on dark) */
+      .shine-hover { position: relative; overflow: hidden; }
+      .shine-hover::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(255,255,255,0.06), transparent);
+        transform: rotate(45deg);
+        transition: 0.7s;
+        opacity: 0;
+      }
+      .shine-hover:hover::after { opacity: 1; left: 100%; top: 100%; }
+
+      .text-glow { text-shadow: 0 0 28px rgba(255,255,255,0.06); }
+
+      /* Sections */
+      section { transition: background .25s ease, color .25s ease; }
+      #philosophy, #collection { background: transparent; }
+      .section-surface { background: var(--bg-secondary); border-radius: 14px; padding: 2rem; }
+
+      /* Transforming reality already dark: fine. Adjust accent inside it */
+      .transform-cta {
+        border: 1px solid rgba(255,255,255,0.06);
+        background: transparent;
+        color: var(--text-primary);
+      }
+      .transform-cta:hover { background: var(--accent); color: #fff; border-color: rgba(255,255,255,0.06); }
+
+      /* Typography tweaks */
+      h1,h2,h3,h4 { color: var(--text-primary); }
+      p, li, span { color: var(--text-muted); }
+
+      /* Cards / product grid */
+      .product-card { background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; }
+      .product-card .meta { color: var(--muted-2); }
+      .product-card h4 { color: var(--text-primary); }
+      .product-card .price { color: var(--text-primary); font-weight:700; }
+
+      /* Replace previous white backgrounds used in markup (helper mapping) */
+      .bg-white, .bg-gray-50 { background: transparent !important; } /* handled by sections/cards */
+      .bg-neutral-100 { background: transparent !important; }
+
+      /* Partners section */
+      #partners { background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent); border-top: 1px solid var(--border); }
+      #partners span { color: var(--muted-2); opacity: .85; }
+      #partners span:hover { color: var(--text-primary); opacity: 1; }
+
+      /* Footer */
+      footer { background: linear-gradient(180deg, #07080a, var(--bg-main)); color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.04); }
+      footer a { color: var(--text-muted); }
+      footer .tracking-premium { color: var(--text-primary); }
+
+      /* Inputs */
+      input[type="email"] { color: var(--text-primary); border-color: rgba(255,255,255,0.06); }
+
+      /* Replace black CTAs in markup (they were `.bg-black`) - adapt via a selector for buttons */
+      button[class*="bg-black"], .bg-black { background: var(--accent) !important; color: #fff !important; border: none !important; box-shadow: 0 12px 30px rgba(255,0,51,0.08); }
+      /* Make the 'All Pieces' pill look like a selected accent pill */
+      .pill-selected { background: var(--accent); color: #fff; border-radius: 8px; padding: .35rem .9rem; font-weight:700; }
+
+      /* Muted borders between product details */
+      .product-divider { border-top: 1px solid rgba(255,255,255,0.03); padding-top: 1.75rem; margin-top: 1.75rem; }
+
+      /* Images: remove heavy grayscale, use softer overlay for premium look */
+      img.rounded-lg { filter: saturate(.9) contrast(.95); transition: transform .8s ease, filter .8s ease, opacity .6s ease; }
+      img.rounded-lg:hover { transform: translateY(-6px) scale(1.01); filter: saturate(1.05) contrast(1.02); }
+
+      /* Scrollbar (dark) */
+      ::-webkit-scrollbar { width: 8px; height:8px; }
+      ::-webkit-scrollbar-track { background: rgba(255,255,255,0.01); }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 999px; }
+
+      /* Responsive tweaks */
+      @media (max-width: 768px) {
+        .text-6xl { font-size: 3rem; }
+        .text-9xl { font-size: 4rem; }
+      }
+    </style>
+</head>
+
+<body class="antialiased selection:bg-[var(--accent)] selection:text-white">
+  <!-- NAVIGATION -->
+  <nav class="fixed w-full z-[100] h-20 flex items-center justify-between px-6 md:px-16">
+    <div class="text-xl font-bold tracking-premium uppercase">Dimensions</div>
+
+    <div class="hidden lg:flex gap-10 text-[10px] font-bold uppercase tracking-[0.3em]">
+      <a href="#hero" class="transition-colors">Home</a>
+      <a href="#philosophy" class="transition-colors">Philosophy</a>
+      <a href="#collection" class="transition-colors">Collection</a>
+      <a href="#partners" class="transition-colors">Contact</a>
+    </div>
+
+    <button class="px-8 py-2.5 text-[10px] font-bold uppercase tracking-widest hover:opacity-95 shine-hover btn-accent">Book Consultation</button>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <header id="hero" class="relative h-screen flex items-center justify-center text-center overflow-hidden">
+    <div class="absolute inset-0 z-0">
+      <!-- keep hero image if you want; it sits over the dark base and looks cinematic -->
+      <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80&w=2000" class="w-full h-full object-cover scale-105" style="mix-blend-mode: overlay; opacity:0.24;">
+      <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/20"></div>
+    </div>
+
+    <div class="relative z-10 text-center px-6">
+      <p class="text-[10px] md:text-xs font-bold uppercase tracking-[0.6em] mb-6 opacity-80" style="color:var(--muted-2);">The Art of Three-Dimensional Living</p>
+      <h1 class="text-6xl md:text-9xl font-bold tracking-premium uppercase mb-8 text-glow" style="letter-spacing:0.12em;">Dimensions</h1>
+      <div class="h-[1px] w-24 bg-white/10 mx-auto mb-8"></div>
+      <h2 class="text-sm md:text-lg font-light tracking-[0.4em] uppercase opacity-90" style="color:var(--muted-2);">Bespoke Furniture Visualization</h2>
+    </div>
+  </header>
+
+  <!-- PHILOSOPHY SECTION (3D SOFAS) -->
+  <section id="philosophy" class="py-32 px-8 max-w-7xl mx-auto">
+    <div class="text-center mb-24">
+      <p class="text-[10px] font-bold uppercase tracking-[0.5em] mb-4" style="color:var(--accent);">Craftsmanship</p>
+      <h2 class="text-4xl md:text-6xl font-bold mb-6 tracking-tight uppercase" style="color:var(--text-primary);">Infinite Forms</h2>
+      <p class="text-xs uppercase tracking-[0.3em] max-w-lg mx-auto leading-relaxed" style="color:var(--text-muted);">Experience tactile elegance through our signature 3D configuration engine.</p>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-8">
+      <!-- Philosophy Card 1 -->
+      <div class="card-3d rounded-xl overflow-hidden group">
+        <div class="bg-studio p-4">
+          <model-viewer 
+              src="https://modelviewer.dev/shared-assets/models/Chair.glb" 
+              auto-rotate camera-controls shadow-intensity="1.5" shadow-softness="1"
+              exposure="1" ar camera-orbit="45deg 75deg 105%"
+              alt="The Linear Armchair"></model-viewer>
+        </div>
+
+        <div class="p-8 text-center">
+          <h3 class="text-lg font-bold uppercase mb-2">Linear Precision</h3>
+          <p class="text-[11px] uppercase tracking-widest leading-relaxed" style="color:var(--text-muted);">Geometric harmony designed for contemporary sanctuaries.</p>
+        </div>
+      </div>
+
+      <!-- Philosophy Card 2 -->
+      <div class="card-3d rounded-xl overflow-hidden group">
+        <div class="bg-studio p-4">
+          <model-viewer 
+              src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/SheenChair/glTF-Binary/SheenChair.glb" 
+              auto-rotate camera-controls shadow-intensity="2" exposure="1.2"
+              ar style="height: 380px;"
+              alt="Velvet Lounge"></model-viewer>
+        </div>
+
+        <div class="p-8 text-center">
+          <h3 class="text-lg font-bold uppercase mb-2">Textural Depth</h3>
+          <p class="text-[11px] uppercase tracking-widest leading-relaxed" style="color:var(--text-muted);">Experience the sheen of premium velvet in digital space.</p>
+        </div>
+      </div>
+
+      <!-- Philosophy Card 3 -->
+      <div class="card-3d rounded-xl overflow-hidden group">
+        <div class="bg-studio p-4">
+          <model-viewer 
+              src="https://modelviewer.dev/shared-assets/models/original_otto_nose_heavy.glb" 
+              auto-rotate camera-controls shadow-intensity="1" exposure="0.8"
+              ar style="height: 380px;"
+              alt="Heritage Sofa"></model-viewer>
+        </div>
+
+        <div class="p-8 text-center">
+          <h3 class="text-lg font-bold uppercase mb-2">Heritage Sculpt</h3>
+          <p class="text-[11px] uppercase tracking-widest leading-relaxed" style="color:var(--text-muted);">Timeless silhouettes reimagined for the next generation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRANSFORMING REALITY SECTION -->
+  <section class="py-32 px-8 bg-[#0b0f17] text-white overflow-hidden">
+    <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-24 items-center">
+      <div>
+        <p class="text-[10px] font-bold uppercase tracking-[0.5em] mb-6" style="color:var(--accent);">Digital Atelier</p>
+        <h2 class="text-5xl md:text-8xl font-bold mb-10 tracking-tighter uppercase leading-[0.9]">Beyond <br>Surface</h2>
+        <p class="text-sm leading-loose mb-12 max-w-sm" style="color:var(--text-muted);">Every stitch, grain, and reflection is calculated. We don't just design furniture; we architect atmosphere.</p>
+        <button class="group relative px-12 py-5 border border-[var(--border)] text-[10px] font-bold uppercase tracking-widest transform-cta">View 2024 Portfolio</button>
+      </div>
+
+      <div class="relative grid grid-cols-2 gap-6">
+        <div class="space-y-6">
+          <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=600" class="rounded-lg object-cover h-64 w-full">
+          <img src="https://images.unsplash.com/photo-1581539250439-c96689b516dd?auto=format&fit=crop&q=80&w=600" class="rounded-lg object-cover h-80 w-full">
+        </div>
+
+        <div class="pt-12 space-y-6">
+          <img src="https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&q=80&w=600" class="rounded-lg object-cover h-80 w-full">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCT COLLECTION GRID -->
+  <section id="collection" class="py-32 px-8">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+      <div>
+        <p class="text-[10px] font-bold uppercase tracking-[0.4em] mb-4" style="color:var(--text-muted);">Curated Objects</p>
+        <h2 class="text-4xl md:text-5xl font-bold uppercase tracking-tight" style="color:var(--text-primary);">The 3D Collection</h2>
+      </div>
+
+      <div class="flex gap-4">
+        <span class="pill-selected text-[10px] font-bold uppercase tracking-widest px-4 py-2 cursor-pointer">All Pieces</span>
+        <span class="text-[10px] font-bold uppercase tracking-widest px-4 py-2 border border-[var(--border)] hover:border-[var(--accent)] cursor-pointer">Limited Edition</span>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto">
+      <!-- 3D Product 1 -->
+      <div class="product-card group">
+        <div class="relative overflow-hidden" style="background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);">
+          <model-viewer 
+            src="https://modelviewer.dev/shared-assets/models/Chair.glb" 
+            auto-rotate rotation-per-second="25deg" camera-controls 
+            shadow-intensity="1" class="h-[400px]"
+            exposure="1" interaction-prompt="none">
+          </model-viewer>
+        </div>
+
+        <div class="p-10">
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-[9px] font-bold uppercase tracking-widest" style="color:var(--accent);">Master Suite</span>
+            <span class="text-[9px] uppercase font-bold tracking-tighter" style="color:var(--text-muted);">SKU: DIM-001</span>
+          </div>
+
+          <h4 class="text-xl font-bold uppercase mb-6 tracking-tight">The Ochre Armchair</h4>
+
+          <div class="flex justify-between items-center product-divider">
+            <span class="text-xl font-bold">$2,850</span>
+            <button class="px-8 py-3 text-[9px] font-bold uppercase tracking-widest btn-accent shine-hover">Inquire</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3D Product 2 -->
+      <div class="product-card group">
+        <div class="relative overflow-hidden" style="background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);">
+          <model-viewer 
+            src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/SheenChair/glTF-Binary/SheenChair.glb" 
+            auto-rotate rotation-per-second="15deg" camera-controls 
+            shadow-intensity="1" class="h-[400px]"
+            exposure="1.1" interaction-prompt="none">
+          </model-viewer>
+        </div>
+
+        <div class="p-10">
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-[9px] font-bold uppercase tracking-widest" style="color:var(--accent);">Lounge</span>
+            <span class="text-[9px] uppercase font-bold tracking-tighter" style="color:var(--text-muted);">SKU: DIM-042</span>
+          </div>
+
+          <h4 class="text-xl font-bold uppercase mb-6 tracking-tight">Velvet Sheen Lounge</h4>
+
+          <div class="flex justify-between items-center product-divider">
+            <span class="text-xl font-bold">$4,100</span>
+            <button class="px-8 py-3 text-[9px] font-bold uppercase tracking-widest btn-accent shine-hover">Inquire</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3D Product 3 -->
+      <div class="product-card group">
+        <div class="relative overflow-hidden" style="background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);">
+          <model-viewer 
+            src="https://modelviewer.dev/shared-assets/models/original_otto_nose_heavy.glb" 
+            auto-rotate rotation-per-second="20deg" camera-controls 
+            shadow-intensity="1" class="h-[400px]"
+            exposure="0.9" interaction-prompt="none">
+          </model-viewer>
+        </div>
+
+        <div class="p-10">
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-[9px] font-bold uppercase tracking-widest" style="color:var(--accent);">Office</span>
+            <span class="text-[9px] uppercase font-bold tracking-tighter" style="color:var(--text-muted);">SKU: DIM-088</span>
+          </div>
+
+          <h4 class="text-xl font-bold uppercase mb-6 tracking-tight">Modernist Ottoman</h4>
+
+          <div class="flex justify-between items-center product-divider">
+            <span class="text-xl font-bold">$1,950</span>
+            <button class="px-8 py-3 text-[9px] font-bold uppercase tracking-widest btn-accent shine-hover">Inquire</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARTNERS -->
+  <section id="partners" class="py-32 px-8">
+    <div class="max-w-7xl mx-auto flex flex-col items-center">
+      <p class="text-[10px] uppercase tracking-[0.5em] mb-16 font-bold" style="color:var(--text-muted);">In Collaboration With</p>
+      <div class="flex flex-wrap justify-center gap-16 md:gap-32 opacity-80 transition-all duration-1000">
+        <span class="text-xl md:text-3xl font-bold uppercase tracking-widest">Artek</span>
+        <span class="text-xl md:text-3xl font-bold uppercase tracking-widest">Flos</span>
+        <span class="text-xl md:text-3xl font-bold uppercase tracking-widest">Vitra</span>
+        <span class="text-xl md:text-3xl font-bold uppercase tracking-widest">B&B Italia</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEGA FOOTER -->
+  <footer class="pt-32 pb-12 px-8">
+    <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-20">
+      <div class="col-span-2 md:col-span-1">
+        <div class="text-xl font-bold tracking-premium uppercase mb-8">Dimensions</div>
+        <p class="text-[10px] leading-relaxed uppercase tracking-widest" style="color:var(--text-muted);">The world's first true 3D bespoke interior agency. Redefining spatial reality since 2018.</p>
+      </div>
+
+      <div>
+        <h4 class="text-[10px] font-bold uppercase tracking-widest mb-8" style="color:var(--accent);">Navigation</h4>
+        <ul class="text-[10px] space-y-4 font-bold uppercase tracking-widest">
+          <li><a href="#" class="hover:text-white transition" style="color:var(--text-muted);">Configurator</a></li>
+          <li><a href="#" class="hover:text-white transition" style="color:var(--text-muted);">The Archive</a></li>
+          <li><a href="#" class="hover:text-white transition" style="color:var(--text-muted);">Materials Library</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-[10px] font-bold uppercase tracking-widest mb-8" style="color:var(--accent);">Studio</h4>
+        <p class="text-[10px] tracking-widest uppercase font-bold mb-4" style="color:var(--text-muted);">London | Milan | NYC</p>
+        <p class="text-[10px] tracking-widest uppercase font-bold" style="color:var(--text-muted);">studio@dimensions.design</p>
+      </div>
+
+      <div>
+        <h4 class="text-[10px] font-bold uppercase tracking-widest mb-8" style="color:var(--accent);">Join the Circle</h4>
+        <input type="email" placeholder="YOUR EMAIL" class="bg-transparent border-b w-full py-2 text-[10px] outline-none focus:border-[var(--accent)] transition" />
+      </div>
+    </div>
+
+    <div class="mt-24 pt-12 border-t flex flex-col md:flex-row justify-between items-center gap-6" style="border-color:rgba(255,255,255,0.04);">
+      <p class="text-[9px] tracking-[0.5em] uppercase font-bold" style="color:var(--text-muted);">&copy; 2024 Dimensions Design Studio.</p>
+      <div class="flex gap-8 text-[9px] font-bold uppercase tracking-widest" style="color:var(--text-muted);">
+        <span>Instagram</span>
+        <span>Behance</span>
+        <span>LinkedIn</span>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

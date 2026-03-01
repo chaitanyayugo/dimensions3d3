@@ -12,21 +12,31 @@
 
     <style>
       /* ----- Dark mode variables (DEFAULT) ----- */
-      :root{
-        --bg-main: #0b0f17;       /* primary page background (replaces white) */
-        --bg-secondary: #0f1419;  /* section backgrounds */
-        --bg-card: #121419;       /* card/panel background */
-        --bg-studio-start: rgba(255,255,255,0.02);
-        --bg-studio-end: rgba(255,255,255,0.03);
+      :root {
+  /* ===== DARK (DEFAULT) ===== */
+  --bg-main: #0b0f17;
+  --bg-secondary: #0f1419;
+  --bg-card: #121419;
 
-        --text-primary: #ffffff;  /* main text */
-        --text-muted: #94a3b8;    /* muted text */
-        --muted-2: #7b8794;
+  --text-primary: #ffffff;
+  --text-muted: #94a3b8;
 
-        --accent: #ff0033;        /* hot red for former 'black' accents */
-        --border: rgba(255,255,255,0.06);
-        --glass: rgba(255,255,255,0.03);
-      }
+  --accent: #ff0033;
+  --border: rgba(255,255,255,0.06);
+}
+
+/* ===== LIGHT MODE ===== */
+html.light {
+  --bg-main: #ffffff;
+  --bg-secondary: #f5f7fa;
+  --bg-card: #ffffff;
+
+  --text-primary: #0b0f17;
+  --text-muted: #4b5563;
+
+  --accent: #ff0033;
+  --border: rgba(0,0,0,0.08);
+}
 
       /* Base */
       html,body { height:100%; }
@@ -192,6 +202,10 @@
     </div>
 
     <button class="px-8 py-2.5 text-[10px] font-bold uppercase tracking-widest hover:opacity-95 shine-hover btn-accent">Book Consultation</button>
+      <button id="themeToggle" 
+class="ml-6 px-5 py-2 text-[10px] font-bold uppercase tracking-widest border border-[var(--border)] hover:bg-[var(--accent)] hover:text-white transition">
+Light Mode
+</button>
   </nav>
 
   <!-- HERO SECTION -->
@@ -199,7 +213,8 @@
     <div class="absolute inset-0 z-0">
       <!-- keep hero image if you want; it sits over the dark base and looks cinematic -->
       <img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80&w=2000" class="w-full h-full object-cover scale-105" style="mix-blend-mode: overlay; opacity:0.24;">
-      <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/20"></div>
+      <div class="w-full h-full object-cover scale-110"
+    style="opacity:0.25;"></div>
     </div>
 
     <div class="relative z-10 text-center px-6">
@@ -438,5 +453,32 @@
       </div>
     </div>
   </footer>
+    <script>
+  const toggle = document.getElementById("themeToggle");
+
+  // Load saved preference
+  if (localStorage.getItem("theme") === "light") {
+    document.documentElement.classList.add("light");
+    toggle.textContent = "Dark Mode";
+  }
+
+  toggle.addEventListener("click", () => {
+    document.documentElement.classList.toggle("light");
+
+    const isLight = document.documentElement.classList.contains("light");
+
+    toggle.textContent = isLight ? "Dark Mode" : "Light Mode";
+
+    localStorage.setItem("theme", isLight ? "light" : "dark");
+  });
+</script>
+    <script>
+  const heroImg = document.getElementById("heroImage");
+
+  window.addEventListener("scroll", () => {
+    const scrollY = window.scrollY;
+    heroImg.style.transform = `translateY(${scrollY * 0.3}px) scale(1.1)`;
+  });
+</script>
 </body>
 </html>
